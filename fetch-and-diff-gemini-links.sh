@@ -19,7 +19,7 @@ do
 
         # Run the Gemini request
         # include a sleep because socat will stop reading data when input hits EOF
-        (printf "${url_scheme}://${url_domain}:${url_port:-1965}${url_path}\r\n" ; sleep 1) | socat "openssl:${url_domain}:${url_port}" stdio > "$temp_response_path"
+        (printf "${url_scheme}://${url_domain}:${url_port:-1965}${url_path}\r\n" ; sleep 2) | socat "openssl:${url_domain}:${url_port},verify=0" stdio > "$temp_response_path"
 
         response_status_code=$(cat "$temp_response_path" | head -1 | cut -f 1 -d ' ')
         case "$response_status_code" in
