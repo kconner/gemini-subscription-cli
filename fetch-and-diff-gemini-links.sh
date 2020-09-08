@@ -21,12 +21,12 @@ do
         # include a sleep because socat will stop reading data when input hits EOF
         (printf "${url_scheme}://${url_domain}:${url_port:-1965}${url_path}\r\n" ; sleep 2) | socat "openssl:${url_domain}:${url_port},verify=0" stdio > "$temp_response_path"
 
-        response_status_code=$(cat "$temp_response_path" | head -1 | cut -f 1 -d ' ')
+        response_status_code=$(cat "$temp_response_path" | head -1 | sed -E 's/^([0-9]*).*$/\1/')
         case "$response_status_code" in
             31)
                 # Redirect
                 >&2 echo "redirected: $url"
-                url=$(cat "$temp_response_path" | head -1 | cut -f 2 -d ' ')
+                url=$(cat "$temp_response_path" | head -1 | sed -E 's/^([0-9]*) *(.*)$/\2/')
                 ;;
             20)
                 # Success
